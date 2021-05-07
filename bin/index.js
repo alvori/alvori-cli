@@ -1,27 +1,28 @@
 #!/usr/bin/env node
 
-const program = require('commander');
-const inquirer = require('inquirer');
+const program = require('commander')
+const inquirer = require('inquirer')
 const colors = require('colors')
-const { spawn } =  require('child_process');
-const fs = require('fs'); 
+const { spawn } = require('child_process')
+const fs = require('fs')
 const fse = require('fs-extra')
 const rimraf = require('rimraf')
 const path = require('path')
-const ora = require('ora');
-const gitDownload = require('download-git-repo');
-const { resolve } = require('path');
+const ora = require('ora')
+const gitDownload = require('download-git-repo')
+
+const { runDev, runBuild, runProd } = require(path.join(process.cwd(), 'app/bin/index.js'))
 
 const createProjectDir = (dir) => {
-    if (!fs.existsSync(dir)){
-        fs.mkdirSync(dir);
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir)
     }
 }
 
 const copy = (src, dest) => {
     return new Promise((resolve, reject) => {
         fse.copy(src, dest, function (err) {
-            if(err) {
+            if (err) {
                 console.log(err)
                 reject()
             } else {
@@ -39,24 +40,26 @@ const create = (name, args) => {
         const srcDir = tpl.src
         const questions = installer.questions
 
-        inquirer
-        .prompt(questions)
-        .then((answers) => {
+        inquirer.prompt(questions).then((answers) => {
             createProjectDir(projectDir)
-            installer.install({name, srcDir, projectDir, answers, colors, ora, copy}).then(() => {
-                return preparePackageJSON(installer.pkgJSON, {projectDir, answers, allowed: installer.pkgJSON})
-            }).then(() => {
-                return installDependencies(answers.installDependencies, projectDir, installer)
-            }).then((installed) => {
-                rimraf(path.join(__dirname, '../lib/templates/tmp/'), () => {})
-                return installer.complete({name, projectDir, answers, colors, installed})
-            })
-        });
+            installer
+                .install({ name, srcDir, projectDir, answers, colors, ora, copy })
+                .then(() => {
+                    return preparePackageJSON(installer.pkgJSON, { projectDir, answers, allowed: installer.pkgJSON })
+                })
+                .then(() => {
+                    return installDependencies(answers.installDependencies, projectDir, installer)
+                })
+                .then((installed) => {
+                    rimraf(path.join(__dirname, '../lib/templates/tmp/'), () => {})
+                    return installer.complete({ name, projectDir, answers, colors, installed })
+                })
+        })
     })
-};
+}
 
 const loadStarterTpl = (tpl) => {
-    if(tpl) {
+    if (tpl) {
         return tpl[0] === '.' ? loadInstaller(tpl) : downloadTpl(tpl)
     } else {
         return loadDefaultTpl()
@@ -68,7 +71,7 @@ const downloadTpl = (url) => {
         const spinner = ora('Download template')
         spinner.start()
         gitDownload(url, path.join(__dirname, '../lib/templates/tmp/'), (err) => {
-            if(err) {
+            if (err) {
                 spinner.stop()
                 console.log(err)
                 reject()
@@ -83,28 +86,30 @@ const downloadTpl = (url) => {
     })
 }
 
-const loadInstaller = (tpl) => new Promise((resolve) => {
-    resolve({
-        installer: require(path.join(process.cwd(), tpl, 'install')),
-        src: path.join(process.cwd(), tpl),
+const loadInstaller = (tpl) =>
+    new Promise((resolve) => {
+        resolve({
+            installer: require(path.join(process.cwd(), tpl, 'install')),
+            src: path.join(process.cwd(), tpl),
+        })
     })
-})
 
-const loadDefaultTpl = () => new Promise((resolve) => {
-    resolve({
-        installer: require(path.join(__dirname, '../lib/templates/ssr/install')),
-        src: path.join(__dirname, '../lib/templates/ssr/'),
+const loadDefaultTpl = () =>
+    new Promise((resolve) => {
+        resolve({
+            installer: require(path.join(__dirname, '../lib/templates/ssr/install')),
+            src: path.join(__dirname, '../lib/templates/ssr/'),
+        })
     })
-})
 
-const preparePackageJSON = (bool, {projectDir, answers, allowed}) => {
+const preparePackageJSON = (bool, { projectDir, answers, allowed }) => {
     return new Promise((resolve, reject) => {
-        if(bool) {
+        if (bool) {
             let file = `${projectDir}package.json`
-            if(fs.existsSync(file)) {
+            if (fs.existsSync(file)) {
                 let package = JSON.parse(fs.readFileSync(file))
-                for(let k in answers) {
-                    if(allowed.includes(k)) {
+                for (let k in answers) {
+                    if (allowed.includes(k)) {
                         package[k] = answers[k]
                     }
                 }
@@ -122,25 +127,24 @@ const preparePackageJSON = (bool, {projectDir, answers, allowed}) => {
 
 const installDependencies = (bool, dir, installer) => {
     return new Promise((resolve, reject) => {
-        if(bool) {
+        if (bool) {
             try {
-                if(!fs.existsSync(`${dir}package.json`)) {
+                if (!fs.existsSync(`${dir}package.json`)) {
                     console.log(colors.red(`File preparation error: The package.json file does not exist`))
                     reject()
                 }
                 installer.onBeforeInstallDependencies()
-                const run = spawn('npm', ['install'], {cwd: dir, stdio: 'inherit', shell: true})
+                const run = spawn('npm', ['install'], { cwd: dir, stdio: 'inherit', shell: true })
                 run.on('error', (error) => {
-                    console.error(`error: ${error.message}`);
+                    console.error(`error: ${error.message}`)
                     reject(false)
-                });
-                  
+                })
+
                 run.on('close', (code) => {
                     resolve(true)
-                });
-            }
-                catch (err) {
-                console.log('chdir: ' + err);
+                })
+            } catch (err) {
+                console.log('chdir: ' + err)
                 reject()
             }
         } else {
@@ -156,8 +160,32 @@ program
     .description('Create new project')
     .option('-t, --template [value]', 'Use specific starter template')
     .action(function (name, args) {
-        console.log(fs.readFileSync(path.join(process.cwd(), '/assets/logo.art'), 'utf8'))
+        console.log(fs.readFileSync(path.join(__dirname, '../assets/logo.art'), 'utf8'))
         create(name, args)
     })
 
-program.parse(process.argv);
+program
+    .command('dev')
+    .description('Compiles and hot-reload for development')
+    .option('-m, --mode [value]', 'Build mode', 'spa')
+    .action(function (args) {
+        runDev(args)
+    })
+
+program
+    .command('prod')
+    .description('Run production mode')
+    .option('-m, --mode [value]', 'Build mode', 'spa')
+    .action(function (args) {
+        runProd(args)
+    })
+
+program
+    .command('build')
+    .description('Compiles and minifies for production')
+    .option('-m, --mode [value]', 'Build mode', 'spa')
+    .action(function (args) {
+        runBuild(args)
+    })
+
+program.parse(process.argv)
