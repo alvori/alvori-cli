@@ -18,7 +18,11 @@
         "vue",
         "vuejs"
     ],
-    "author": "Alexander Kudryashov",
+    "author": {
+        "name": "Alexander Kudryashov",
+        "email": "alexkudryashov111@gmail.com",
+        "url": "https://github.com/sander111/alvori-cli"
+    },
     "license": "MIT",
     "dependencies": {
         "chalk": "^4.1.1",
