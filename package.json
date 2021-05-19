@@ -3,7 +3,6 @@
     "version": "1.0.0-beta",
     "description": "Alvori Freamwork global CLI",
     "main": "index.js",
-    "preferGlobal": true,
     "directories": {
         "lib": "lib"
     },

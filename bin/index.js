@@ -11,7 +11,9 @@ const path = require('path')
 const ora = require('ora')
 const gitDownload = require('download-git-repo')
 
-const { runDev, runBuild, runProd } = require(path.join(process.cwd(), 'app/bin/index.js'))
+const version = `Alvori CLI version: ${JSON.parse(fs.readFileSync(path.join(__dirname, '../package.json'))).version}`
+const commands = ['create', '-V', '--version', '-h', '--help']
+const cmd = process.argv[2]
 
 const createProjectDir = (dir) => {
     if (!fs.existsSync(dir)) {
@@ -155,37 +157,29 @@ const installDependencies = (bool, dir, installer) => {
 
 // Create new project
 // $ alvori create
-program
-    .command('create <name>')
-    .description('Create new project')
-    .option('-t, --template [value]', 'Use specific starter template')
-    .action(function (name, args) {
-        console.log(fs.readFileSync(path.join(__dirname, '../assets/logo.art'), 'utf8'))
-        create(name, args)
-    })
 
-program
-    .command('dev')
-    .description('Compiles and hot-reload for development')
-    .option('-m, --mode [value]', 'Build mode', 'spa')
-    .action(function (args) {
-        runDev(args)
-    })
+if (commands.includes(cmd)) {
+    program
+        .command('create <name>')
+        .description('Create new project')
+        .option('-t, --template [value]', 'Use specific starter template')
+        .action(function (name, args) {
+            console.log(fs.readFileSync(path.join(__dirname, '../assets/logo.art'), 'utf8'))
+            create(name, args)
+        })
 
-program
-    .command('prod')
-    .description('Run production mode')
-    .option('-m, --mode [value]', 'Build mode', 'spa')
-    .action(function (args) {
-        runProd(args)
-    })
+    program.option('-h, --help', 'Show app version').action((args) =>
+        console.log(`
+    Init project
+        $ alvori create <name> [options] - Create new project
+    Options
+        -t, --template [value] - Use specific starter template. If no value is specified, the default start template is used
+        `)
+    )
 
-program
-    .command('build')
-    .description('Compiles and minifies for production')
-    .option('-m, --mode [value]', 'Build mode', 'spa')
-    .action(function (args) {
-        runBuild(args)
-    })
+    program.version(version)
 
-program.parse(process.argv)
+    program.parse(process.argv)
+}
+
+fs.existsSync(path.join(process.cwd(), 'app/bin/index.js')) && require(path.join(process.cwd(), 'app/bin/index.js'))
