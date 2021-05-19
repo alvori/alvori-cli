@@ -26,3 +26,9 @@ Options
     --help, -h - Displays this message
     --app-version, -app-v - Displays App version
 ```
+
+## License
+
+Copyright (c) 2021-present Alexander Kudryashov
+
+[MIT License](http://en.wikipedia.org/wiki/MIT_License)
