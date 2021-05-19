@@ -2,7 +2,7 @@
 
 const program = require('commander')
 const inquirer = require('inquirer')
-const colors = require('colors')
+const chalk = require('chalk')
 const { spawn } = require('child_process')
 const fs = require('fs')
 const fse = require('fs-extra')
@@ -10,6 +10,7 @@ const rimraf = require('rimraf')
 const path = require('path')
 const ora = require('ora')
 const gitDownload = require('download-git-repo')
+const chalk = require('chalk')
 
 const version = `Alvori CLI version: ${JSON.parse(fs.readFileSync(path.join(__dirname, '../package.json'))).version}`
 const commands = ['create', '-V', '--version', '-h', '--help']
@@ -45,7 +46,7 @@ const create = (name, args) => {
         inquirer.prompt(questions).then((answers) => {
             createProjectDir(projectDir)
             installer
-                .install({ name, srcDir, projectDir, answers, colors, ora, copy })
+                .install({ name, srcDir, projectDir, answers, chalk, ora, copy })
                 .then(() => {
                     return preparePackageJSON(installer.pkgJSON, { projectDir, answers, allowed: installer.pkgJSON })
                 })
@@ -54,7 +55,7 @@ const create = (name, args) => {
                 })
                 .then((installed) => {
                     rimraf(path.join(__dirname, '../lib/templates/tmp/'), () => {})
-                    return installer.complete({ name, projectDir, answers, colors, installed })
+                    return installer.complete({ name, projectDir, answers, chalk, installed })
                 })
         })
     })
@@ -118,7 +119,7 @@ const preparePackageJSON = (bool, { projectDir, answers, allowed }) => {
                 fs.writeFileSync(file, JSON.stringify(package, null, 4), 'UTF-8', (err) => err && console.log(err))
                 resolve()
             } else {
-                console.log(colors.red(`File preparation error: The package.json file does not exist`))
+                console.log(chalk.red(`File preparation error: The package.json file does not exist`))
                 reject()
             }
         } else {
@@ -132,7 +133,7 @@ const installDependencies = (bool, dir, installer) => {
         if (bool) {
             try {
                 if (!fs.existsSync(`${dir}package.json`)) {
-                    console.log(colors.red(`File preparation error: The package.json file does not exist`))
+                    console.log(chalk.red(`File preparation error: The package.json file does not exist`))
                     reject()
                 }
                 installer.onBeforeInstallDependencies()
