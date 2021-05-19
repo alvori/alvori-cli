@@ -10,7 +10,6 @@ const rimraf = require('rimraf')
 const path = require('path')
 const ora = require('ora')
 const gitDownload = require('download-git-repo')
-const chalk = require('chalk')
 
 const version = `Alvori CLI version: ${JSON.parse(fs.readFileSync(path.join(__dirname, '../package.json'))).version}`
 const commands = ['create', '-V', '--version', '-h', '--help']
