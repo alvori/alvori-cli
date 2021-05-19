@@ -21,9 +21,19 @@
     "author": {
         "name": "Alexander Kudryashov",
         "email": "alexkudryashov111@gmail.com",
+        "url": "https://github.com/sander111"
+    },
+    "repository": {
+        "type": "git",
         "url": "https://github.com/sander111/alvori-cli"
     },
+    "bugs": "https://github.com/sander111/alvori-cli/issues",
+    "homepage": "https://github.com/sander111/alvori-cli",
     "license": "MIT",
+    "engines": {
+        "node": ">= 10.0.0",
+        "npm": ">= 5.6.0"
+    },
     "dependencies": {
         "chalk": "^4.1.1",
         "commander": "^7.2.0",
