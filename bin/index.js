@@ -96,13 +96,13 @@ const loadInstaller = (tpl) =>
         })
     })
 
-const loadDefaultTpl = () =>
-    new Promise((resolve) => {
-        resolve({
-            installer: require(path.join(__dirname, '../lib/templates/ssr/install')),
-            src: path.join(__dirname, '../lib/templates/ssr/'),
-        })
-    })
+const loadDefaultTpl = () => downloadTpl('alvori/alvori-starter-template')
+    // new Promise((resolve) => {
+    //     resolve({
+    //         installer: require(path.join(__dirname, '../lib/templates/ssr/install')),
+    //         src: path.join(__dirname, '../lib/templates/ssr/'),
+    //     })
+    // })
 
 const preparePackageJSON = (bool, { projectDir, answers, allowed }) => {
     return new Promise((resolve, reject) => {

@@ -1,5 +1,5 @@
 {
-    "name": "alvori-cli",
+    "name": "@alvori/cli",
     "version": "1.0.0-beta",
     "description": "Alvori Freamwork global CLI",
     "main": "index.js",
@@ -25,10 +25,10 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/sander111/alvori-cli"
+        "url": "https://github.com/alvori/alvori-cli"
     },
-    "bugs": "https://github.com/sander111/alvori-cli/issues",
-    "homepage": "https://github.com/sander111/alvori-cli",
+    "bugs": "https://github.com/alvori/alvori-cli/issues",
+    "homepage": "https://github.com/alvori/alvori-cli",
     "license": "MIT",
     "engines": {
         "node": ">= 10.0.0",
@@ -42,5 +42,8 @@
         "inquirer": "^8.0.0",
         "ora": "^5.4.0",
         "rimraf": "^3.0.2"
+    },
+    "publishConfig": {
+        "access": "public"
     }
 }

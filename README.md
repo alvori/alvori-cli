@@ -1,11 +1,11 @@
 # Alvori CLI
 
-CLI for [Alvori freamwork](https://github.com/sander111/alvori-app)
+CLI for [Alvori freamwork](https://github.com/alvori/alvori-app) (Global)
 
 ## Install
 
 ```
-npm i alvori-cli -g
+npm i @alvori/cli -g
 ```
 
 ## Commands
